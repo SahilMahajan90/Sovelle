@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#f3e6d6" />
+<title>Sovelle — Build Your Hamper</title>
+<style>
+  :root{
+    --cream:#f5ecdf;
+    --cream-2:#faf4ea;
+    --gold:#a67c3d;
+    --gold-soft:#c6a05f;
+    --ink:#3a2e22;
+    --ink-soft:#6b5c4a;
+    --line:#e3d4bf;
+    --ok:#1f8a4c;
+    --card:#fffdf9;
+    --shadow:0 6px 20px rgba(120,90,50,.12);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.45;
+    padding-bottom:96px;
+  }
+  header{
+    text-align:center;
+    padding:26px 16px 18px;
+    background:linear-gradient(180deg,#f7ecdd 0%,#f3e4d0 100%);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-family:Georgia,"Times New Roman",serif;
+    letter-spacing:.42em;
+    font-size:30px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 4px;
+    padding-left:.42em;
+  }
+  .tag{
+    font-size:11px;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0;
+  }
+  .intro{
+    max-width:720px;margin:14px auto 0;
+    font-size:14px;color:var(--ink-soft);
+  }
+  main{max-width:760px;margin:0 auto;padding:8px 14px 20px}
+  .step{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    margin:16px 0;
+    padding:16px 14px 18px;
+    box-shadow:var(--shadow);
+  }
+  .step-head{display:flex;align-items:center;gap:10px;margin:0 0 4px}
+  .num{
+    flex:0 0 auto;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--gold);color:#fff;
+    display:grid;place-items:center;
+    font-size:14px;font-weight:700;
+  }
+  .step-head h2{
+    font-family:Georgia,serif;font-size:19px;margin:0;font-weight:700;
+  }
+  .hint{font-size:12.5px;color:var(--ink-soft);margin:2px 0 14px 38px}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:10px;
+  }
+  .card{
+    position:relative;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    background:var(--cream-2);
+    padding:12px 10px 10px;
+    cursor:pointer;
+    transition:border-color .15s,transform .08s,box-shadow .15s;
+    display:flex;flex-direction:column;
+  }
+  .card:active{transform:scale(.985)}
+  .thumb{
+    width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;
+    background:#f0e6d6;display:grid;place-items:center;margin-bottom:8px;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .emoji{font-size:34px;line-height:1}
+  .card .name{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .card .meta{font-size:11.5px;color:var(--ink-soft);margin-top:3px;flex:1}
+  .card .price{font-weight:700;color:var(--gold);margin-top:8px;font-size:14px}
+  .card.selected{
+    border-color:var(--gold);
+    background:#fff;
+    box-shadow:0 0 0 2px rgba(166,124,61,.18),var(--shadow);
+  }
+  .card.selected::after{
+    content:"✓";
+    position:absolute;top:8px;right:8px;
+    width:20px;height:20px;border-radius:50%;
+    background:var(--gold);color:#fff;font-size:12px;
+    display:grid;place-items:center;
+  }
+  /* add-on rows with qty steppers */
+  .addon{
+    display:flex;align-items:center;gap:10px;
+    border:1.5px solid var(--line);
+    border-radius:14px;background:var(--cream-2);
+    padding:10px 12px;margin-bottom:10px;
+  }
+  .addon.active{border-color:var(--gold);background:#fff}
+  .addon .thumb{width:48px;height:48px;flex:0 0 auto;margin-bottom:0;border-radius:9px;aspect-ratio:auto}
+  .addon .thumb .emoji{font-size:24px}
+  .addon .info{flex:1;min-width:0}
+  .addon .info .name{font-weight:600;font-size:14px}
+  .addon .info .meta{font-size:11.5px;color:var(--ink-soft)}
+  .addon .info .price{font-size:13px;color:var(--gold);font-weight:700;margin-top:1px}
+  .stepper{display:flex;align-items:center;gap:0;flex:0 0 auto}
+  .stepper button{
+    width:30px;height:30px;border:1px solid var(--gold-soft);
+    background:#fff;color:var(--gold);font-size:18px;font-weight:700;
+    cursor:pointer;display:grid;place-items:center;
+  }
+  .stepper button:first-child{border-radius:9px 0 0 9px}
+  .stepper button:last-child{border-radius:0 9px 9px 0}
+  .stepper .qty{
+    width:34px;height:30px;border-top:1px solid var(--gold-soft);
+    border-bottom:1px solid var(--gold-soft);
+    display:grid;place-items:center;font-weight:700;font-size:14px;background:#fff;
+  }
+  .addon-group-label{
+    font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);margin:16px 0 8px 2px;
+  }
+  .addon-group-label:first-of-type{margin-top:4px}
+  .skip{
+    font-size:12px;color:var(--ink-soft);
+    background:none;border:none;text-decoration:underline;cursor:pointer;
+    margin-left:38px;padding:0;
+  }
+  /* summary bar */
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;
+    background:#fff;border-top:1px solid var(--line);
+    box-shadow:0 -6px 20px rgba(120,90,50,.12);
+    padding:10px 14px;z-index:40;
+  }
+  .bar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
+  .total{flex:1}
+  .total .lbl{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
+  .total .amt{font-size:22px;font-weight:800;color:var(--ink);font-family:Georgia,serif}
+  .total .items{font-size:11.5px;color:var(--ink-soft)}
+  .wa{
+    flex:0 0 auto;border:none;border-radius:12px;cursor:pointer;
+    background:#25D366;color:#fff;font-weight:700;font-size:15px;
+    padding:12px 16px;display:flex;align-items:center;gap:8px;
+  }
+  .wa:disabled{background:#b9c7bf;cursor:not-allowed}
+  .wa svg{width:18px;height:18px;fill:#fff}
+  footer{text-align:center;font-size:11.5px;color:var(--ink-soft);padding:6px 16px 20px}
+  footer .by{color:var(--gold);font-style:italic}
+  .toast{
+    position:fixed;left:50%;bottom:110px;transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:30px;
+    font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;
+  }
+  .toast.show{opacity:1}
+  @media(max-width:420px){
+    .brand{font-size:24px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 class="brand">SOVELLE</h1>
+  <p class="tag">where warmth meets calm</p>
+  <p class="intro">Design your own gift hamper — choose a signature urli, add a fragrant wax sachet, and finish with little add-ons. Prices update live. When you're ready, send your hamper straight to us on WhatsApp.</p>
+</header>
+
+<main>
+  <!-- STEP 1: URLI -->
+  <section class="step">
+    <div class="step-head"><span class="num">1</span><h2>Pick your Urli</h2></div>
+    <p class="hint">Choose one. Larger sizes carry more blooms — the price varies accordingly.</p>
+    <div class="grid" id="urliGrid"></div>
+  </section>
+
+  <!-- STEP 2: WAX SACHET -->
+  <section class="step">
+    <div class="step-head"><span class="num">2</span><h2>Pick a Wax Sachet</h2></div>
+    <p class="hint">A hanging fragrance sachet for closets, cars or gifting. Optional.</p>
+    <div class="grid" id="sachetGrid"></div>
+    <button class="skip" id="skipSachet" type="button">Skip wax sachet</button>
+  </section>
+
+  <!-- STEP 3: ADD-ONS -->
+  <section class="step">
+    <div class="step-head"><span class="num">3</span><h2>Add-ons</h2></div>
+    <p class="hint">Optional little extras. Tap + to add any quantity.</p>
+
+    <div class="addon-group-label">🕯️ Tealights</div>
+    <div id="tealightList"></div>
+
+    <div class="addon-group-label">🍬 Desserts (candle mithai)</div>
+    <div id="dessertList"></div>
+
+    <div class="addon-group-label">🥜 Dry Fruits</div>
+    <div id="dryfruitList"></div>
+  </section>
+</main>
+
+<div class="bar">
+  <div class="bar-inner">
+    <div class="total">
+      <div class="lbl">Hamper total</div>
+      <div class="amt" id="totalAmt">₹0</div>
+      <div class="items" id="itemCount">No items selected</div>
+    </div>
+    <button class="wa" id="waBtn" disabled>
+      <svg viewBox="0 0 24 24"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.02zM12.04 20.15a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23a8.2 8.2 0 0 1 8.23 8.24c0 4.54-3.69 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+      Order
+    </button>
+  </div>
+</div>
+
+<footer>
+  Thank you for supporting handmade. Prices may vary slightly with customisation, fragrance or bulk/event orders.<br>
+  <span class="by">Handcrafted with love — Akanksha Singh</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- WhatsApp number (Akanksha) ----
+const WHATSAPP = "919731356868";
+
+// ---- Catalogue data (from Sovelle product catalogue) ----
+const urlis = [
+  {id:"u1", name:"Elephant Stand Urli — 2.5\"", emoji:"🐘", img:"elephant-urli.jpg", meta:"Brass elephant base · daisy or rose", price:289},
+  {id:"u2", name:"Lotus Bowl Urli — 3\"", emoji:"🪷", img:"lotus-bowl-urli.jpg", meta:"Brass bowl · sold in pairs", price:325},
+  {id:"u3", name:"Lotus Urli — 3.5\"", emoji:"🪷", img:"lotus-urli.jpg", meta:"Scalloped · white, yellow or emerald", price:299},
+  {id:"u4", name:"Hibiscus Urli — 3.5\"", emoji:"🌺", img:"hibiscus-urli.jpg", meta:"Gold fleck detailing", price:299},
+  {id:"u5", name:"Daisy Urli — 3.5\"", emoji:"🌼", img:"daisy-urli.jpg", meta:"Single daisy bloom", price:299},
+  {id:"u6", name:"Sunflower Urli — 3.5\"", emoji:"🌻", img:"sunflower-urli.jpg", meta:"Gold rim", price:299},
+  {id:"u7", name:"Marigold Urli — 4\"", emoji:"🌼", img:"marigold-urli.jpg", meta:"Yellow or orange cluster", price:489},
+  {id:"u8", name:"Lotus Pearl Urli — 4.5\"", emoji:"🪷", img:"lotus-pearl-urli.jpg", meta:"Layered bloom · pearl accents", price:449},
+  {id:"u9", name:"Lotus Pond Urli — 4.5\"", emoji:"🛶", img:"lotus-pond-urli-45.jpg", meta:"Boats, lotus & lily pads", price:499},
+  {id:"u10", name:"Mixed Blooms Urli — 4.5\"", emoji:"💐", img:"mixed-blooms-urli-45.jpg", meta:"Assorted ivory daisies", price:525},
+  {id:"u11", name:"Hibiscus Trio Urli — 4.5\"", emoji:"🌺", img:"hibiscus-trio-urli.jpg", meta:"Three blooms with leaves", price:479},
+  {id:"u12", name:"Lotus Pond Urli — 5\"", emoji:"🪷", img:"lotus-pond-urli-5.jpg", meta:"Round tin · lotus, lily pads & buds", price:599},
+  {id:"u13", name:"Tulip Urli — 5\"", emoji:"🌷", img:"tulip-urli.jpg", meta:"Brass bowl · white, lavender & purple", price:699},
+  {id:"u14", name:"Sunflower Pond Urli — 5\"", emoji:"🌻", img:"sunflower-pond-urli.jpg", meta:"Teal base · gold fleck", price:589},
+  {id:"u15", name:"Puja Thali Urli — 5.5\"", emoji:"🪔", img:"puja-thali-urli.jpg", meta:"Modak/laddoo, hibiscus & leaf", price:549},
+  {id:"u16", name:"Poker Urli — 5.5\"", emoji:"🃏", img:"poker-urli.jpg", meta:"Card suits & gold leaf", price:569},
+  {id:"u17", name:"Mixed Blooms Urli — 5.5\"", emoji:"💐", img:"mixed-blooms-urli-55.jpg", meta:"Gerbera, marigold & rose · pearls", price:545},
+  {id:"u18", name:"3-Tier Rose Candle Stand", emoji:"🌹", img:"tier-rose-stand.jpg", meta:"Red roses, gold leaf & pearls", price:1099},
+  {id:"u19", name:"3-Tier Lotus Candle Stand", emoji:"🪷", img:"tier-lotus-stand.jpg", meta:"Lotus topper · pink or green", price:999}
+];
+
+// Wax sachets are priced ₹180–250 in the catalogue.
+const sachets = [
+  {id:"s1", name:"Lotus Wax Sachet", emoji:"🪷", img:"lotus-sachet.jpg", meta:"Satin ribbon bow", price:200},
+  {id:"s2", name:"Mixed Flowers Wax Sachet", emoji:"💐", img:"mixed-flowers-sachet.jpg", meta:"Dusty pink · jute tie", price:220},
+  {id:"s3", name:"Hibiscus Wax Sachet", emoji:"🌺", img:"hibiscus-sachet.jpg", meta:"Gold leaf detail", price:230},
+  {id:"s4", name:"Lotus Boat Wax Sachet", emoji:"🛶", img:"lotus-boat-sachet.jpg", meta:"Lily pads, gold flakes & pearls", price:250},
+  {id:"s5", name:"Sunflower Wax Sachet", emoji:"🌻", img:"sunflower-sachet.jpg", meta:"Cord tie · twin blooms", price:200},
+  {id:"s6", name:"Daisy Pearl Wax Sachet", emoji:"🌼", img:"daisy-pearl-sachet.jpg", meta:"Red daisies · pearl detail", price:230},
+  {id:"s7", name:"Poker Suit Wax Sachet", emoji:"🃏", img:"poker-sachet.jpg", meta:"Gold leaf & pearls", price:240}
+];
+
+const tealights = [
+  {id:"t1", name:"Daisy Tealights", emoji:"🌼", img:"daisy-tealights.jpg", meta:"Pack of 4 · pastel shades", price:100},
+  {id:"t2", name:"Lotus & Bloom Tealights", emoji:"🪷", img:"lotus-bloom-tealights.jpg", meta:"Pack of 4 · gold shimmer", price:120}
+];
+
+const desserts = [
+  {id:"d1", name:"Laddoo Candles", emoji:"🟡", img:"laddoo-candles.jpg", meta:"Pack of 4 · silver leaf", price:220},
+  {id:"d2", name:"Laddoo & Kaju Katli Urli — 4.5\"", emoji:"🍥", img:"laddoo-kajukatli-urli.jpg", meta:"Scalloped urli · silver leaf", price:449},
+  {id:"d3", name:"Laddoo Urli — 3\"", emoji:"🟡", img:"laddoo-urli.jpg", meta:"Single laddoo · bowl urli", price:289},
+  {id:"d4", name:"Modak Candles", emoji:"🔺", img:"modak-candles.jpg", meta:"Pack of 2 · silver leaf", price:140}
+];
+
+const dryfruits = [
+  {id:"f1", name:"Cashew & Almonds", emoji:"🥜", img:"dry-fruits.jpg", meta:"Premium dry fruit mix · 100g", price:250}
+];
+
+// ---- State ----
+let selectedUrli = null;
+let selectedSachet = null;
+const qty = {}; // id -> quantity for add-ons
+
+// Image thumbnail that falls back to the product emoji if the photo is missing.
+function thumb(it){
+  const fallback = `this.parentNode.innerHTML='<span class=\\'emoji\\'>${it.emoji}</span>'`;
+  return `<div class="thumb"><img src="images/${it.img}" alt="${it.name}" loading="lazy" onerror="${fallback}"></div>`;
+}
+
+// ---- Render single-select grids ----
+function renderGrid(el, items, kind){
+  el.innerHTML = items.map(it => `
+    <div class="card" data-id="${it.id}" data-kind="${kind}">
+      ${thumb(it)}
+      <div class="name">${it.name}</div>
+      <div class="meta">${it.meta}</div>
+      <div class="price">₹${it.price.toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+renderGrid(document.getElementById('urliGrid'), urlis, 'urli');
+renderGrid(document.getElementById('sachetGrid'), sachets, 'sachet');
+
+document.getElementById('urliGrid').addEventListener('click', e=>{
+  const card = e.target.closest('.card'); if(!card) return;
+  selectedUrli = selectedUrli === card.dataset.id ? null : card.dataset.id;
+  markSelected('urliGrid', selectedUrli);
+  update();
+});
+document.getElementById('sachetGrid').addEventListener('click', e=>{
+  const card = e.target.closest('.card'); if(!card) return;
+  selectedSachet = selectedSachet === card.dataset.id ? null : card.dataset.id;
+  markSelected('sachetGrid', selectedSachet);
+  update();
+});
+document.getElementById('skipSachet').addEventListener('click', ()=>{
+  selectedSachet = null; markSelected('sachetGrid', null); update();
+});
+
+function markSelected(gridId, id){
+  document.querySelectorAll('#'+gridId+' .card').forEach(c=>{
+    c.classList.toggle('selected', c.dataset.id === id);
+  });
+}
+
+// ---- Render add-on lists with steppers ----
+function renderAddons(el, items){
+  el.innerHTML = items.map(it => `
+    <div class="addon" data-id="${it.id}">
+      ${thumb(it)}
+      <div class="info">
+        <div class="name">${it.name}</div>
+        <div class="meta">${it.meta}</div>
+        <div class="price">₹${it.price.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="stepper">
+        <button type="button" data-act="dec" aria-label="Remove one">−</button>
+        <div class="qty" id="qty-${it.id}">0</div>
+        <button type="button" data-act="inc" aria-label="Add one">+</button>
+      </div>
+    </div>`).join('');
+  el.addEventListener('click', e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const row = e.target.closest('.addon'); const id = row.dataset.id;
+    qty[id] = qty[id] || 0;
+    qty[id] += (btn.dataset.act === 'inc') ? 1 : -1;
+    if(qty[id] < 0) qty[id] = 0;
+    document.getElementById('qty-'+id).textContent = qty[id];
+    row.classList.toggle('active', qty[id] > 0);
+    update();
+  });
+}
+renderAddons(document.getElementById('tealightList'), tealights);
+renderAddons(document.getElementById('dessertList'), desserts);
+renderAddons(document.getElementById('dryfruitList'), dryfruits);
+
+// ---- Lookups ----
+const allAddons = [...tealights, ...desserts, ...dryfruits];
+const findUrli = id => urlis.find(x=>x.id===id);
+const findSachet = id => sachets.find(x=>x.id===id);
+const findAddon = id => allAddons.find(x=>x.id===id);
+
+// ---- Totals + summary ----
+function buildOrder(){
+  const lines = []; let total = 0; let count = 0;
+  if(selectedUrli){ const u=findUrli(selectedUrli); lines.push({label:u.name, qty:1, amt:u.price}); total+=u.price; count++; }
+  if(selectedSachet){ const s=findSachet(selectedSachet); lines.push({label:s.name, qty:1, amt:s.price}); total+=s.price; count++; }
+  allAddons.forEach(a=>{
+    const q = qty[a.id]||0;
+    if(q>0){ lines.push({label:a.name, qty:q, amt:a.price*q}); total+=a.price*q; count+=q; }
+  });
+  return {lines, total, count};
+}
+
+function update(){
+  const {lines, total, count} = buildOrder();
+  document.getElementById('totalAmt').textContent = '₹'+total.toLocaleString('en-IN');
+  document.getElementById('itemCount').textContent =
+    count===0 ? 'No items selected' : count+' item'+(count>1?'s':'')+' in hamper';
+  document.getElementById('waBtn').disabled = !selectedUrli;
+}
+
+// ---- WhatsApp order ----
+document.getElementById('waBtn').addEventListener('click', ()=>{
+  if(!selectedUrli){ toast('Please pick an urli first'); return; }
+  const {lines, total} = buildOrder();
+  let msg = "*Sovelle — My Custom Hamper*%0A%0A";
+  lines.forEach(l=>{
+    msg += "• "+encodeURIComponent(l.label)
+        + (l.qty>1 ? " x"+l.qty : "")
+        + " — ₹"+l.amt.toLocaleString('en-IN')+"%0A";
+  });
+  msg += "%0A*Total: ₹"+total.toLocaleString('en-IN')+"*%0A%0A";
+  msg += encodeURIComponent("Hi Akanksha! I'd like to order this hamper. 🕯️");
+  window.open("https://wa.me/"+WHATSAPP+"?text="+msg, "_blank");
+});
+
+// ---- Toast ----
+let toastTimer;
+function toast(txt){
+  const t = document.getElementById('toast');
+  t.textContent = txt; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+update();
+</script>
+</body>
+</html>
