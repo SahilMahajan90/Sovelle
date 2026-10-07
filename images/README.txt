@@ -32,6 +32,23 @@ URLIS
   u18 3-Tier Rose Candle Stand      -> tier-rose-stand.jpg
   u19 3-Tier Lotus Candle Stand     -> tier-lotus-stand.jpg
 
+BOUQUET CANDLES
+  b1  Single Daisy Bouquet          -> daisy-bouquet.jpg
+  b2  Single Tulip Bouquet          -> tulip-bouquet.jpg
+
+SCULPTURAL CANDLES
+  sc1 Tulip Bunch Candle            -> tulip-bunch.jpg
+  sc2 Teddy Birthday Cake Candle    -> teddy-birthday-cake.jpg
+
+GLASS JAR CANDLES
+  g1  Teddy Bear Candle in Glass Jar    -> teddy-bear-jar.jpg
+  g2  Daisy Jar Candle (Ribbed, ₹299)   -> daisy-jar-ribbed.jpg
+  g3  Teddy & Daisy Jar Candle          -> teddy-daisy-jar.jpg
+  g4  Halloween Edition Jar Candle      -> halloween-jar.jpg
+  g5  Poker Jar Candle                  -> poker-jar.jpg
+  g6  Gold Foil Gel Wax Jar Candle      -> gold-foil-gel-jar.jpg
+  g7  Daisy Jar Candle (₹245)           -> daisy-jar.jpg
+
 WAX SACHETS
   s1  Lotus Wax Sachet              -> lotus-sachet.jpg
   s2  Mixed Flowers Wax Sachet      -> mixed-flowers-sachet.jpg
@@ -50,6 +67,7 @@ DESSERTS
   d2  Laddoo & Kaju Katli Urli 4.5" -> laddoo-kajukatli-urli.jpg
   d3  Laddoo Urli 3"                -> laddoo-urli.jpg
   d4  Modak Candles                 -> modak-candles.jpg
+  d5  Chocolate Wax Melts           -> chocolate-wax-melts.jpg
 
 DRY FRUITS
   f1  Cashew & Almonds              -> dry-fruits.jpg
