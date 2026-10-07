@@ -109,8 +109,17 @@
     position:absolute;top:8px;right:8px;
     width:20px;height:20px;border-radius:50%;
     background:var(--gold);color:#fff;font-size:12px;
-    display:grid;place-items:center;
+    display:grid;place-items:center;z-index:2;
   }
+  .card .stepper{margin-top:10px;width:100%}
+  .card .stepper button{flex:1;height:32px}
+  .card .stepper .qty{flex:1;width:auto;height:32px}
+  .subcat{
+    font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold);margin:20px 0 9px 2px;padding-bottom:5px;
+    border-bottom:1px solid var(--line);
+  }
+  .subcat:first-of-type{margin-top:4px}
   /* add-on rows with qty steppers */
   .addon{
     display:flex;align-items:center;gap:10px;
@@ -143,11 +152,15 @@
     color:var(--gold);margin:16px 0 8px 2px;
   }
   .addon-group-label:first-of-type{margin-top:4px}
-  .skip{
-    font-size:12px;color:var(--ink-soft);
-    background:none;border:none;text-decoration:underline;cursor:pointer;
-    margin-left:38px;padding:0;
+  .field{margin:0 0 13px}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+  .field input{
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);
+    border-radius:10px;font-size:15px;background:var(--cream-2);color:var(--ink);
   }
+  .field input:focus{outline:none;border-color:var(--gold);background:#fff}
+  .field input.invalid{border-color:#c0392b;background:#fdf3f2}
+  .req{color:#c0392b;font-weight:700}
   /* summary bar */
   .bar{
     position:fixed;left:0;right:0;bottom:0;
@@ -185,23 +198,33 @@
 <header>
   <h1 class="brand">SOVELLE</h1>
   <p class="tag">where warmth meets calm</p>
-  <p class="intro">Design your own gift hamper — choose a signature urli, add a fragrant wax sachet, and finish with little add-ons. Prices update live. When you're ready, send your hamper straight to us on WhatsApp.</p>
+  <p class="intro">Design your own gift hamper — pick any candles you love, add fragrant wax sachets, and finish with little add-ons. Prices update live. When you're ready, send your hamper straight to us on WhatsApp.</p>
 </header>
 
 <main>
-  <!-- STEP 1: URLI -->
+  <!-- STEP 1: CANDLES -->
   <section class="step">
-    <div class="step-head"><span class="num">1</span><h2>Pick your Urli</h2></div>
-    <p class="hint">Choose one. Larger sizes carry more blooms — the price varies accordingly.</p>
+    <div class="step-head"><span class="num">1</span><h2>Pick your Candles</h2></div>
+    <p class="hint">Add any candles and quantities — tap + to add more, including multiples of the same design.</p>
+
+    <div class="subcat">Urli Candles</div>
     <div class="grid" id="urliGrid"></div>
+
+    <div class="subcat">Bouquet Candles</div>
+    <div class="grid" id="bouquetGrid"></div>
+
+    <div class="subcat">Sculptural Candles</div>
+    <div class="grid" id="sculpturalGrid"></div>
+
+    <div class="subcat">Glass Jar Candles</div>
+    <div class="grid" id="glassjarGrid"></div>
   </section>
 
-  <!-- STEP 2: WAX SACHET -->
+  <!-- STEP 2: WAX SACHETS -->
   <section class="step">
-    <div class="step-head"><span class="num">2</span><h2>Pick a Wax Sachet</h2></div>
-    <p class="hint">A hanging fragrance sachet for closets, cars or gifting. Optional.</p>
+    <div class="step-head"><span class="num">2</span><h2>Wax Sachets</h2></div>
+    <p class="hint">Hanging fragrance sachets for closets, cars or gifting. Optional.</p>
     <div class="grid" id="sachetGrid"></div>
-    <button class="skip" id="skipSachet" type="button">Skip wax sachet</button>
   </section>
 
   <!-- STEP 3: ADD-ONS -->
@@ -217,6 +240,20 @@
 
     <div class="addon-group-label">🥜 Dry Fruits</div>
     <div id="dryfruitList"></div>
+  </section>
+
+  <!-- STEP 4: DETAILS -->
+  <section class="step">
+    <div class="step-head"><span class="num">4</span><h2>Your Details</h2></div>
+    <p class="hint">Required so we can confirm your order and arrange delivery.</p>
+    <div class="field">
+      <label for="custName">Full Name <span class="req">*</span></label>
+      <input id="custName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="custFlat">Flat / House Number <span class="req">*</span></label>
+      <input id="custFlat" type="text" placeholder="e.g. Flat 302, Tower B" autocomplete="address-line1">
+    </div>
   </section>
 </main>
 
@@ -268,6 +305,26 @@ const urlis = [
   {id:"u19", name:"3-Tier Lotus Candle Stand", emoji:"🪷", img:"tier-lotus-stand.jpg", meta:"Lotus topper · pink or green", price:999}
 ];
 
+const bouquet = [
+  {id:"b1", name:"Single Daisy Bouquet", emoji:"🌼", img:"daisy-bouquet.jpg", meta:"Single stem · sleeve wrap with dried florals", price:100},
+  {id:"b2", name:"Single Tulip Bouquet", emoji:"🌷", img:"tulip-bouquet.jpg", meta:"Single stem · sleeve wrap with dried florals", price:100}
+];
+
+const sculptural = [
+  {id:"sc1", name:"Tulip Bunch Candle", emoji:"🌷", img:"tulip-bunch.jpg", meta:"Sculptural bouquet · blush pink", price:289},
+  {id:"sc2", name:"Teddy Birthday Cake Candle", emoji:"🧸", img:"teddy-birthday-cake.jpg", meta:"Teddy, sunflowers & \"Happy Birthday\" plaque", price:649}
+];
+
+const glassjar = [
+  {id:"g1", name:"Teddy Bear Candle in Glass Jar", emoji:"🧸", img:"teddy-bear-jar.jpg", meta:"Glass jar · hand-shaped bear topper", price:150},
+  {id:"g2", name:"Daisy Jar Candle (Ribbed)", emoji:"🌼", img:"daisy-jar-ribbed.jpg", meta:"Ribbed jar with lid · red or white gerbera", price:299},
+  {id:"g3", name:"Teddy & Daisy Jar Candle", emoji:"🧸", img:"teddy-daisy-jar.jpg", meta:"Bear with daisy backdrop · engraved", price:389},
+  {id:"g4", name:"Halloween Edition Jar Candle", emoji:"🕸️", img:"halloween-jar.jpg", meta:"Glass jar · spiderweb design", price:369},
+  {id:"g5", name:"Poker Jar Candle", emoji:"🃏", img:"poker-jar.jpg", meta:"Wooden lid · card-suit toppers", price:399},
+  {id:"g6", name:"Gold Foil Gel Wax Jar Candle", emoji:"✨", img:"gold-foil-gel-jar.jpg", meta:"Layered gel wax with gold foil", price:120},
+  {id:"g7", name:"Daisy Jar Candle", emoji:"🌼", img:"daisy-jar.jpg", meta:"Glass jar · pink, white or purple daisy", price:245}
+];
+
 // Wax sachets are priced ₹180–250 in the catalogue.
 const sachets = [
   {id:"s1", name:"Lotus Wax Sachet", emoji:"🪷", img:"lotus-sachet.jpg", meta:"Satin ribbon bow", price:200},
@@ -288,17 +345,20 @@ const desserts = [
   {id:"d1", name:"Laddoo Candles", emoji:"🟡", img:"laddoo-candles.jpg", meta:"Pack of 4 · silver leaf", price:220},
   {id:"d2", name:"Laddoo & Kaju Katli Urli — 4.5\"", emoji:"🍥", img:"laddoo-kajukatli-urli.jpg", meta:"Scalloped urli · silver leaf", price:449},
   {id:"d3", name:"Laddoo Urli — 3\"", emoji:"🟡", img:"laddoo-urli.jpg", meta:"Single laddoo · bowl urli", price:289},
-  {id:"d4", name:"Modak Candles", emoji:"🔺", img:"modak-candles.jpg", meta:"Pack of 2 · silver leaf", price:140}
+  {id:"d4", name:"Modak Candles", emoji:"🔺", img:"modak-candles.jpg", meta:"Pack of 2 · silver leaf", price:140},
+  {id:"d5", name:"Chocolate Wax Melts", emoji:"🍫", img:"chocolate-wax-melts.jpg", meta:"Pack of 5 · for oil burners & diffusers", price:100}
 ];
 
 const dryfruits = [
   {id:"f1", name:"Cashew & Almonds", emoji:"🥜", img:"dry-fruits.jpg", meta:"Premium dry fruit mix · 100g", price:250}
 ];
 
-// ---- State ----
-let selectedUrli = null;
-let selectedSachet = null;
-const qty = {}; // id -> quantity for add-ons
+// ---- Grouped lists ----
+const candles = [...urlis, ...bouquet, ...sculptural, ...glassjar];
+const allAddons = [...tealights, ...desserts, ...dryfruits];
+
+// ---- State: quantity per product id ----
+const qty = {};
 
 // Image thumbnail that falls back to the product emoji if the photo is missing.
 function thumb(it){
@@ -306,42 +366,28 @@ function thumb(it){
   return `<div class="thumb"><img src="images/${it.img}" alt="${it.name}" loading="lazy" onerror="${fallback}"></div>`;
 }
 
-// ---- Render single-select grids ----
-function renderGrid(el, items, kind){
+function stepperHTML(id){
+  return `<div class="stepper">
+    <button type="button" data-act="dec" aria-label="Remove one">−</button>
+    <div class="qty" id="qty-${id}">0</div>
+    <button type="button" data-act="inc" aria-label="Add one">+</button>
+  </div>`;
+}
+
+// ---- Render grid cards (candles & sachets) with steppers ----
+function renderCardGrid(el, items){
   el.innerHTML = items.map(it => `
-    <div class="card" data-id="${it.id}" data-kind="${kind}">
+    <div class="card" data-id="${it.id}">
       ${thumb(it)}
       <div class="name">${it.name}</div>
       <div class="meta">${it.meta}</div>
       <div class="price">₹${it.price.toLocaleString('en-IN')}</div>
+      ${stepperHTML(it.id)}
     </div>`).join('');
-}
-renderGrid(document.getElementById('urliGrid'), urlis, 'urli');
-renderGrid(document.getElementById('sachetGrid'), sachets, 'sachet');
-
-document.getElementById('urliGrid').addEventListener('click', e=>{
-  const card = e.target.closest('.card'); if(!card) return;
-  selectedUrli = selectedUrli === card.dataset.id ? null : card.dataset.id;
-  markSelected('urliGrid', selectedUrli);
-  update();
-});
-document.getElementById('sachetGrid').addEventListener('click', e=>{
-  const card = e.target.closest('.card'); if(!card) return;
-  selectedSachet = selectedSachet === card.dataset.id ? null : card.dataset.id;
-  markSelected('sachetGrid', selectedSachet);
-  update();
-});
-document.getElementById('skipSachet').addEventListener('click', ()=>{
-  selectedSachet = null; markSelected('sachetGrid', null); update();
-});
-
-function markSelected(gridId, id){
-  document.querySelectorAll('#'+gridId+' .card').forEach(c=>{
-    c.classList.toggle('selected', c.dataset.id === id);
-  });
+  attachStepper(el);
 }
 
-// ---- Render add-on lists with steppers ----
+// ---- Render add-on rows with steppers ----
 function renderAddons(el, items){
   el.innerHTML = items.map(it => `
     <div class="addon" data-id="${it.id}">
@@ -351,64 +397,92 @@ function renderAddons(el, items){
         <div class="meta">${it.meta}</div>
         <div class="price">₹${it.price.toLocaleString('en-IN')}</div>
       </div>
-      <div class="stepper">
-        <button type="button" data-act="dec" aria-label="Remove one">−</button>
-        <div class="qty" id="qty-${it.id}">0</div>
-        <button type="button" data-act="inc" aria-label="Add one">+</button>
-      </div>
+      ${stepperHTML(it.id)}
     </div>`).join('');
+  attachStepper(el);
+}
+
+function attachStepper(el){
   el.addEventListener('click', e=>{
     const btn = e.target.closest('button'); if(!btn) return;
-    const row = e.target.closest('.addon'); const id = row.dataset.id;
-    qty[id] = qty[id] || 0;
-    qty[id] += (btn.dataset.act === 'inc') ? 1 : -1;
-    if(qty[id] < 0) qty[id] = 0;
-    document.getElementById('qty-'+id).textContent = qty[id];
-    row.classList.toggle('active', qty[id] > 0);
-    update();
+    const row = e.target.closest('[data-id]'); if(!row) return;
+    changeQty(row.dataset.id, btn.dataset.act === 'inc' ? 1 : -1);
   });
 }
+
+function changeQty(id, delta){
+  const next = Math.max(0, (qty[id]||0) + delta);
+  qty[id] = next;
+  document.getElementById('qty-'+id).textContent = next;
+  const row = document.querySelector('[data-id="'+id+'"]');
+  row.classList.toggle('selected', next > 0);
+  row.classList.toggle('active', next > 0);
+  update();
+}
+
+renderCardGrid(document.getElementById('urliGrid'), urlis);
+renderCardGrid(document.getElementById('bouquetGrid'), bouquet);
+renderCardGrid(document.getElementById('sculpturalGrid'), sculptural);
+renderCardGrid(document.getElementById('glassjarGrid'), glassjar);
+renderCardGrid(document.getElementById('sachetGrid'), sachets);
 renderAddons(document.getElementById('tealightList'), tealights);
 renderAddons(document.getElementById('dessertList'), desserts);
 renderAddons(document.getElementById('dryfruitList'), dryfruits);
 
-// ---- Lookups ----
-const allAddons = [...tealights, ...desserts, ...dryfruits];
-const findUrli = id => urlis.find(x=>x.id===id);
-const findSachet = id => sachets.find(x=>x.id===id);
-const findAddon = id => allAddons.find(x=>x.id===id);
-
 // ---- Totals + summary ----
 function buildOrder(){
-  const lines = []; let total = 0; let count = 0;
-  if(selectedUrli){ const u=findUrli(selectedUrli); lines.push({label:u.name, qty:1, amt:u.price}); total+=u.price; count++; }
-  if(selectedSachet){ const s=findSachet(selectedSachet); lines.push({label:s.name, qty:1, amt:s.price}); total+=s.price; count++; }
-  allAddons.forEach(a=>{
-    const q = qty[a.id]||0;
-    if(q>0){ lines.push({label:a.name, qty:q, amt:a.price*q}); total+=a.price*q; count+=q; }
+  const lines = []; let total = 0, count = 0, candleCount = 0;
+  const collect = (arr, isCandle) => arr.forEach(p=>{
+    const q = qty[p.id]||0;
+    if(q>0){ lines.push({label:p.name, qty:q, amt:p.price*q}); total+=p.price*q; count+=q; if(isCandle) candleCount+=q; }
   });
-  return {lines, total, count};
+  collect(candles, true);
+  collect(sachets, false);
+  collect(allAddons, false);
+  return {lines, total, count, candleCount};
 }
 
 function update(){
-  const {lines, total, count} = buildOrder();
+  const {total, count} = buildOrder();
   document.getElementById('totalAmt').textContent = '₹'+total.toLocaleString('en-IN');
   document.getElementById('itemCount').textContent =
     count===0 ? 'No items selected' : count+' item'+(count>1?'s':'')+' in hamper';
-  document.getElementById('waBtn').disabled = !selectedUrli;
+  document.getElementById('waBtn').disabled = count===0;
 }
+
+// Clear the invalid highlight as the customer types.
+['custName','custFlat'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=> e.target.classList.remove('invalid'));
+});
 
 // ---- WhatsApp order ----
 document.getElementById('waBtn').addEventListener('click', ()=>{
-  if(!selectedUrli){ toast('Please pick an urli first'); return; }
-  const {lines, total} = buildOrder();
+  const {lines, total, candleCount} = buildOrder();
+  if(candleCount < 1){ toast('Please add at least one candle'); return; }
+
+  const nameEl = document.getElementById('custName');
+  const flatEl = document.getElementById('custFlat');
+  const name = nameEl.value.trim();
+  const flat = flatEl.value.trim();
+  let invalid = false;
+  if(!name){ nameEl.classList.add('invalid'); invalid = true; }
+  if(!flat){ flatEl.classList.add('invalid'); invalid = true; }
+  if(invalid){
+    toast('Please enter your name and flat number');
+    (name ? flatEl : nameEl).scrollIntoView({behavior:'smooth', block:'center'});
+    (name ? flatEl : nameEl).focus();
+    return;
+  }
+
   let msg = "*Sovelle — My Custom Hamper*%0A%0A";
+  msg += "*Name:* " + encodeURIComponent(name) + "%0A";
+  msg += "*Flat / House:* " + encodeURIComponent(flat) + "%0A%0A";
   lines.forEach(l=>{
-    msg += "• "+encodeURIComponent(l.label)
+    msg += "• " + encodeURIComponent(l.label)
         + (l.qty>1 ? " x"+l.qty : "")
-        + " — ₹"+l.amt.toLocaleString('en-IN')+"%0A";
+        + " — ₹" + l.amt.toLocaleString('en-IN') + "%0A";
   });
-  msg += "%0A*Total: ₹"+total.toLocaleString('en-IN')+"*%0A%0A";
+  msg += "%0A*Total: ₹" + total.toLocaleString('en-IN') + "*%0A%0A";
   msg += encodeURIComponent("Hi Akanksha! I'd like to order this hamper. 🕯️");
   window.open("https://wa.me/"+WHATSAPP+"?text="+msg, "_blank");
 });
